@@ -1,0 +1,15 @@
+{
+  "name": "opencode-classifier-dev-auth",
+  "version": "0.1.0",
+  "description": "classifier.dev — zero-shot System One decision models for OpenCode and magpie",
+  "type": "module",
+  "main": "./index.mjs",
+  "files": ["index.mjs", "README.md"],
+  "keywords": ["opencode", "opencode-plugin", "classifier", "zero-shot-classification"],
+  "license": "MIT",
+  "repository": "github:laxtiz/opencode-classifier-dev-auth",
+  "magpie": {
+    "icon": "https://classifier.dev/favicon.ico",
+    "maxConcurrency": 4
+  }
+}
