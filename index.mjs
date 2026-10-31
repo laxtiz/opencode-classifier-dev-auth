@@ -44,7 +44,7 @@ function normalizeKey(key) {
   return trimmed.startsWith(WORKSPACE_PREFIX) ? trimmed : ANONYMOUS_KEY
 }
 
-export const ClassifierDevAuthPlugin = async () => ({
+export const ClassifierDevAuthPlugin = async (input) => ({
   // The provider, and the models it has while nobody is signed in.
   config: async (cfg) => {
     cfg.provider ??= {}
@@ -64,6 +64,15 @@ export const ClassifierDevAuthPlugin = async () => ({
 
   auth: {
     provider: PROVIDER,
+    options: [
+      {
+        key: "share_data",
+        label: "Share data for training",
+        description:
+          "Off (default): requests carry X-Classifier-Share-Data: false — private, standard quota. On: requests are retained for training and the quota doubles.",
+        default: false,
+      },
+    ],
     methods: [
       {
         type: "api",
@@ -98,13 +107,14 @@ export const ClassifierDevAuthPlugin = async () => ({
       const auth = await getAuth()
       if (auth?.type !== "api") return {}
       const key = apiKeyOf(auth)
+      const shareData = input?.magpie?.option?.(PROVIDER, "share_data") === true
       return {
         baseURL: `${BASE}/v1`,
         async fetch(input, init) {
           const headers = new Headers(init?.headers)
           headers.set("authorization", `Bearer ${key}`)
-          // Private by default; opting out also doubles the service quota.
-          headers.set("x-classifier-share-data", "false")
+          // Private by default; the service doubles the quota when shared.
+          if (!shareData) headers.set("x-classifier-share-data", "false")
           headers.set("x-classifier-client", "opencode-classifier-dev-auth/0.1.0")
           return fetch(input, { ...init, headers })
         },
