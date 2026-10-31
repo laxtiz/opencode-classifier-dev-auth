@@ -11,10 +11,10 @@ const ANONYMOUS_KEY = "unused"
 const WORKSPACE_PREFIX = "classifier_agent_"
 
 const DEFAULT_MODELS = {
-  "classifier/jev-latest": { name: "Classifier Jev latest" },
-  "classifier/jev-preview": { name: "Classifier Jev preview" },
-  "classifier/imajev-4b": { name: "Classifier Imajev 4B" },
-  "classifier/jev-omni": { name: "Classifier Jev Omni" },
+  "jev-latest": { name: "Classifier Jev latest" },
+  "jev-preview": { name: "Classifier Jev preview" },
+  "imajev-4b": { name: "Classifier Imajev 4B" },
+  "jev-omni": { name: "Classifier Jev Omni" },
 }
 
 const baseModel = {
@@ -173,7 +173,7 @@ export const ClassifierDevAuthPlugin = async () => ({
       for (const model of list) {
         const short = model.name
         if (!short || !NAMES[short]) continue
-        out[`classifier/${short}`] = { ...baseModel, id: short, name: NAMES[short] }
+        out[short] = { ...baseModel, id: short, name: NAMES[short] }
       }
       return Object.keys(out).length ? out : provider.models
     },
