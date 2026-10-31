@@ -21,7 +21,7 @@ No key is needed. Add the plugin and press Enter at the optional key prompt:
 
 ```sh
 magpie plugin add opencode-classifier-dev-auth
-magpie plugin login classifier
+magpie plugin login classifier-dev
 ```
 
 - Empty input uses the free anonymous quota. The plugin stores the service's accepted `unused` placeholder; anonymous limits are per IP.
