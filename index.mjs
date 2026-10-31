@@ -5,7 +5,7 @@
 // generate no text, so they are marked `decides: true`: magpie offers them
 // as routing-group classifiers and hides them from agents' model lists.
 
-const PROVIDER = "classifier-dev"
+const PROVIDER = "classifier"
 const BASE = "https://classifier.dev"
 const ANONYMOUS_KEY = "unused"
 const WORKSPACE_PREFIX = "classifier_agent_"
