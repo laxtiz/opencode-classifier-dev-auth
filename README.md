@@ -30,7 +30,7 @@ magpie plugin login classifier
 
 ## Privacy and quotas
 
-Every request sent by the plugin carries `X-Classifier-Share-Data: false`, so request content is not retained for training. This uses standard rather than doubled quotas: anonymous fast access is 3,000 classifications per minute and 20,000 per day. Workspace limits depend on the plan.
+By default, every request carries `X-Classifier-Share-Data: false`: request content is not retained for training, and the standard quota applies (anonymous fast access is 3,000 classifications per minute and 20,000 per day). Toggling **Share data for training** on in the provider's settings sends requests without the opt-out header — content is retained for training and the per-minute and daily quotas double. Workspace limits depend on the plan.
 
 Anonymous sign-ins do not show a balance. A workspace key does: `magpie quota` reads its pre-paid wallet from classifier.dev and shows available and reserved funds.
 

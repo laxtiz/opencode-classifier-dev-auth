@@ -10,7 +10,7 @@ Provider plugin for [magpie](https://usemagpie.ai) / OpenCode: signs in to [clas
 
 - All models carry `decides: true` and the provider `decide: true`: magpie offers them as routing-group classifiers and hides them from agents. Do not remove these flags or add chat models — the upstream cannot generate text.
 - `npm: "@ai-sdk/openai-compatible"` is a placeholder; no chat request ever reaches it.
-- Keep `X-Classifier-Share-Data: false` on loader requests. It keeps request content private and uses the service's standard (undoubled) quota.
+- Keep `X-Classifier-Share-Data: false` on loader requests unless the user turns the `share_data` option on. Off (default) keeps request content private at the standard quota; on, the service retains content for training and doubles the quota.
 
 ## Developing against the real magpie
 
