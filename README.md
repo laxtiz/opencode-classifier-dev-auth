@@ -32,7 +32,7 @@ magpie plugin login classifier-dev
 
 Every request sent by the plugin carries `X-Classifier-Share-Data: false`, so request content is not retained for training. This uses standard rather than doubled quotas: anonymous fast access is 3,000 classifications per minute and 20,000 per day. Workspace limits depend on the plan.
 
-classifier.dev has no public account-usage endpoint for this plugin to expose, so `magpie quota` does not show classifier.dev usage.
+Anonymous sign-ins do not show a balance. A workspace key does: `magpie quota` reads its pre-paid wallet from classifier.dev and shows available and reserved funds.
 
 ## Protocol
 

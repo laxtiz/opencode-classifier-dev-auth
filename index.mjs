@@ -110,6 +110,48 @@ export const ClassifierDevAuthPlugin = async () => ({
         },
       }
     },
+
+    // Anonymous accounts have no balance to read. Workspace keys use the
+    // pre-paid wallet: magpie shows a balance window, not a used/limit one.
+    async usage(getAuth) {
+      const auth = await getAuth()
+      const key = typeof auth?.key === "string" ? auth.key.trim() : ""
+      if (auth?.type !== "api" || !key.startsWith(WORKSPACE_PREFIX)) {
+        return { plan: "Anonymous", windows: [] }
+      }
+      let res
+      try {
+        res = await fetch(`${BASE}/v1/account/balance`, {
+          headers: { authorization: `Bearer ${key}` },
+        })
+      } catch (e) {
+        return { error: `classifier.dev unreachable: ${e}`, windows: [] }
+      }
+      if (!res.ok) {
+        const error = { error: `classifier.dev answered ${res.status}`, windows: [] }
+        if (res.status === 401) error.signIn = "expired"
+        return error
+      }
+      const account = await res.json()
+      const available = Number(account.available)
+      if (!Number.isFinite(available)) {
+        return { error: "classifier.dev returned an unreadable balance", windows: [] }
+      }
+      const reserved = Number(account.reserved) || 0
+      const money = (n) => `$${n.toFixed(2)}`
+      return {
+        plan: "Workspace",
+        balance: money(available),
+        windows: [
+          {
+            name: "Wallet",
+            balance: available,
+            unit: "USD",
+            display: `${money(available)} available · ${money(reserved)} reserved`,
+          },
+        ],
+      }
+    },
   },
 
   // The published models of this account. Discovery is public.
