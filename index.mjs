@@ -7,7 +7,7 @@
 
 const PROVIDER = "classifier"
 const BASE = "https://classifier.dev"
-const VERSION = "0.2.0"
+const VERSION = "0.2.1"
 const ANONYMOUS_KEY = "unused"
 const WORKSPACE_PREFIX = "classifier_agent_"
 
