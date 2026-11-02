@@ -17,16 +17,15 @@ The list is refreshed from [`GET /v1/models`](https://classifier.dev/openapi.jso
 
 ## Sign in
 
-No key is needed. Add the plugin and press Enter at the optional key prompt:
+No key is needed. Add the plugin and pick **Free access (no key needed)** — the method returns the preset anonymous key instantly, with no input box and no browser:
 
 ```sh
 magpie plugin add opencode-classifier-dev-auth
 magpie plugin login classifier
 ```
 
-- Empty input uses the free anonymous quota. The plugin stores the service's accepted `unused` placeholder; anonymous limits are per IP.
-- A `classifier_agent_…` key from [classifier.dev/app/keys](https://classifier.dev/app/keys) is stored normally and uses workspace quota and credits.
-- Any other value is normalized to the anonymous placeholder.
+- The anonymous method stores the service's accepted `unused` placeholder; anonymous limits are per IP.
+- A `classifier_agent_…` key from [classifier.dev/app/keys](https://classifier.dev/app/keys) can still be entered via the **Workspace key** method and uses workspace quota and credits.
 
 ## Privacy and quotas
 

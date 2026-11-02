@@ -7,6 +7,7 @@
 
 const PROVIDER = "classifier"
 const BASE = "https://classifier.dev"
+const VERSION = "0.2.0"
 const ANONYMOUS_KEY = "unused"
 const WORKSPACE_PREFIX = "classifier_agent_"
 
@@ -39,9 +40,8 @@ function apiKeyOf(auth) {
   return key || ANONYMOUS_KEY
 }
 
-function normalizeKey(key) {
-  const trimmed = (key ?? "").trim()
-  return trimmed.startsWith(WORKSPACE_PREFIX) ? trimmed : ANONYMOUS_KEY
+function clientHeaders() {
+  return { "x-classifier-client": `opencode-classifier-dev-auth/${VERSION}` }
 }
 
 export const ClassifierDevAuthPlugin = async (input) => ({
@@ -75,31 +75,25 @@ export const ClassifierDevAuthPlugin = async (input) => ({
     ],
     methods: [
       {
+        // an api method returning the preset key, as magpie-community's
+        // zen-free does: magpie asks for a key on a plain `type: "api"`
+        // method, but `keyless` runs `authorize` at once — no input box,
+        // no browser. The service accepts this placeholder for the free
+        // per-IP quota.
         type: "api",
-        label: "Keyless or workspace key",
         keyless: true,
-        placeholder: "classifier_agent_… (leave empty for free anonymous use)",
-        prompts: [
-          {
-            type: "text",
-            key: "workspace_key",
-            message: "Workspace key (optional; press Enter for anonymous)",
-            placeholder: "classifier_agent_…",
-          },
-        ],
-
-        // magpie runs this after the optional prompt. Empty input is the
-        // supported keyless path; workspace keys are kept unchanged.
-        async authorize(inputs) {
-          const key = normalizeKey(inputs?.workspace_key)
-          return {
-            type: "success",
-            key,
-            metadata: {
-              mode: key === ANONYMOUS_KEY ? "anonymous" : "workspace",
-            },
-          }
-        },
+        label: "Free access (no key needed)",
+        placeholder: ANONYMOUS_KEY,
+        authorize: async () => ({
+          type: "success",
+          key: ANONYMOUS_KEY,
+          metadata: { mode: "anonymous" },
+        }),
+      },
+      {
+        type: "api",
+        label: "Workspace key",
+        placeholder: "classifier_agent_…",
       },
     ],
 
@@ -115,7 +109,7 @@ export const ClassifierDevAuthPlugin = async (input) => ({
           headers.set("authorization", `Bearer ${key}`)
           // Private by default; the service doubles the quota when shared.
           if (!shareData) headers.set("x-classifier-share-data", "false")
-          headers.set("x-classifier-client", "opencode-classifier-dev-auth/0.1.0")
+          for (const [k, v] of Object.entries(clientHeaders())) headers.set(k, v)
           return fetch(input, { ...init, headers })
         },
       }
@@ -171,9 +165,7 @@ export const ClassifierDevAuthPlugin = async (input) => ({
       if (auth?.type !== "api") return provider.models
       let list
       try {
-        const res = await fetch(`${BASE}/v1/models`, {
-          headers: { "x-classifier-client": "opencode-classifier-dev-auth/0.1.0" },
-        })
+        const res = await fetch(`${BASE}/v1/models`, { headers: clientHeaders() })
         if (!res.ok) return provider.models
         list = (await res.json()).models ?? []
       } catch {

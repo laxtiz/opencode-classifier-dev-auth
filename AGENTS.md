@@ -27,5 +27,5 @@ Provider plugin for [magpie](https://usemagpie.ai) / OpenCode: signs in to [clas
 ## Sign-in and identity
 
 - Sign-in state lives in magpie's `plugin-auth.json`, keyed by provider id — not by the plugin path. Moving/renaming the folder is safe, but re-register it: `magpie plugin rm <old-path> && magpie plugin add <new-path>`.
-- The single sign-in method is deliberately keyless. Empty or arbitrary input becomes the service-accepted `unused` anonymous key; only `classifier_agent_…` is stored as a workspace key.
+- The default method is a `type: "api"` method with `keyless: true` whose `authorize` returns the service-accepted `unused` anonymous key at once, as magpie-community's zen-free does — no input box, no browser (on a plain api method magpie asks for a key, so `keyless` is what makes it answer instantly). The `type: "api"` method stays for `classifier_agent_…` workspace keys.
 - `auth.usage` reads the workspace wallet at `GET /v1/account/balance`; anonymous accounts report no balance and make no request. A 401 marks the sign-in expired. Do not add quota windows based on guessed rate-limit paths.
